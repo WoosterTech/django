@@ -867,6 +867,24 @@ class IntegerFieldTests(SimpleTestCase):
             ],
         )
 
+    def test_unordered_choices(self):
+        class Model(models.Model):
+            CHOICES_INT = {1, 2}
+            field = models.IntegerField(choices=CHOICES_INT)
+
+        field = Model._meta.get_field("field")
+        self.assertEqual(
+            field.check(),
+            [
+                Error(
+                    "'choices' must be a mapping (e.g. a dictionary) or an "
+                    "order-stable iterable (e.g. a list or tuple).",
+                    obj=field,
+                    id="fields.E004",
+                ),
+            ],
+        )
+
     def test_non_iterable_choices_number(self):
         """An integer isn't a valid choice pair."""
 

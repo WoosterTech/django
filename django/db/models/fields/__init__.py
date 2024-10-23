@@ -318,11 +318,14 @@ class Field(RegisterLookupMixin):
         if not self.choices:
             return []
 
-        if not isinstance(self.choices, Iterable) or isinstance(self.choices, str):
+        # confirm that choices is an iterable and that it is order stable
+        if not isinstance(self.choices, Iterable) or isinstance(
+            self.choices, (str, set)
+        ):
             return [
                 checks.Error(
-                    "'choices' must be a mapping (e.g. a dictionary) or an iterable "
-                    "(e.g. a list or tuple).",
+                    "'choices' must be a mapping (e.g. a dictionary) or an "
+                    "order-stable iterable (e.g. a list or tuple).",
                     obj=self,
                     id="fields.E004",
                 )
